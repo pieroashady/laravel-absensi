@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('username')->unique();
             $table->string('password');
+            $table->string('imei_device')->unique();
             $table->enum('role', ["siswa", "guru", "admin"]);
             $table->rememberToken();
             $table->timestamps();

@@ -12,12 +12,11 @@ class AuthController extends BaseController
 {
     public function login(Request $request)
     {
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+        if (Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
             $auth = Auth::user();
-            $success['token'] =  $request->createToken('LaravelSanctumAuth')->plainTextToken;
-            $success['name'] =  $auth->name;
+            $auth['token'] =  $auth->createToken('LaravelSanctumAuth')->plainTextToken;
 
-            return $this->handleResponse($success, 'User logged-in!');
+            return $this->handleResponse($auth, 'User logged-in!');
         } else {
             return $this->handleError('Unauthorised.', ['error' => 'Unauthorised']);
         }
@@ -37,10 +36,13 @@ class AuthController extends BaseController
 
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
-        $user = User::create($input);
-        $success['token'] =  $user->createToken('LaravelSanctumAuth')->plainTextToken;
-        $success['name'] =  $user->username;
 
-        return $this->handleResponse($success, 'User successfully registered!');
+        try {
+            $user = User::create($input);
+            $user['token'] =  $user->createToken('LaravelSanctumAuth')->plainTextToken;
+            return $this->handleResponse($user, 'User successfully registered!');
+        } catch (\Throwable $th) {
+            return $this->handleError('Akun sudah terdaftar.', ['error' => 'Akun sudah terdaftar']);
+        }
     }
 }
