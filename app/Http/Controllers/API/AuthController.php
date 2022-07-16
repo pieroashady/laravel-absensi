@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -41,7 +42,7 @@ class AuthController extends BaseController
             $user = User::create($input);
             $user['token'] =  $user->createToken('LaravelSanctumAuth')->plainTextToken;
             return $this->handleResponse($user, 'User successfully registered!');
-        } catch (\Throwable $th) {
+        } catch (Exception $ex) {
             return $this->handleError('Akun sudah terdaftar.', ['error' => 'Akun sudah terdaftar']);
         }
     }

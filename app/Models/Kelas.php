@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Mehradsadeghi\FilterQueryString\FilterQueryString;
 
 class Kelas extends Model
 {
-    use HasFactory;
+    use HasFactory, FilterQueryString;
 
     protected $table = 'kelas';
 
@@ -15,4 +16,14 @@ class Kelas extends Model
         'nama_kelas',
         'jurusan_id'
     ];
+
+    protected $filters = [
+        'nama_kelas',
+        'jurusan_id'
+    ];
+
+    public function jurusan()
+    {
+        return $this->belongsTo(Jurusan::class);
+    }
 }

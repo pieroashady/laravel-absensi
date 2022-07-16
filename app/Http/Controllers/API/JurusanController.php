@@ -11,10 +11,10 @@ use Illuminate\Support\Facades\Validator;
 
 class JurusanController extends BaseController
 {
-    public function index()
+    public function index(Request $request)
     {
-        $jurusan = Jurusan::all();
-        return $this->handleResponse(Resource::collection($jurusan), 'Berhasil menampilkan data jurusan');
+        $jurusan = Jurusan::filter()->simplePaginate((int)$request->get('per_page', 15));
+        return Resource::collection($jurusan);
     }
 
     public function store(Request $request)

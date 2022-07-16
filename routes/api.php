@@ -1,9 +1,15 @@
 <?php
 
+use App\Http\Controllers\API\AbsenSiswaController;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\GuruController;
+use App\Http\Controllers\API\JadwalMapelController;
 use App\Http\Controllers\API\JurusanController;
 use App\Http\Controllers\API\KelasController;
+use App\Http\Controllers\API\MataPelajaranController;
+use App\Http\Controllers\API\QrCodeController;
 use App\Http\Controllers\API\SiswaController;
+use App\Models\MataPelajaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,10 +25,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::resource('jurusan', JurusanController::class);
-    Route::resource('kelas', KelasController::class);
-    Route::resource('siswa', SiswaController::class);
+    Route::resource('mata-pelajaran', MataPelajaranController::class);
+    Route::resource('jadwal-mapel', JadwalMapelController::class);
 });
+
+Route::resource('jurusan', JurusanController::class);
+Route::resource('kelas', KelasController::class);
+Route::resource('guru', GuruController::class);
+Route::resource('siswa', SiswaController::class);
+Route::resource('absen-siswa', AbsenSiswaController::class);
+Route::get('qr', [QrCodeController::class, 'index']);
 
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();

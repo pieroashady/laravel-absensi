@@ -10,4 +10,10 @@ class JadwalMapel extends Model
     use HasFactory;
 
     protected $table = 'jadwal_mapel';
+
+    protected $fillable = [
+        'guru_id',
+        'kelas_id',
+        'mata_pelajaran_id'
+    ];
 }

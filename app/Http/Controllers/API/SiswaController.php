@@ -10,15 +10,15 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class SiswaController extends BaseController
 {
-    public function index()
+    public function index(Request $request)
     {
-        $siswa = Siswa::all();
-        return $this->handleResponse(Resource::collection($siswa), 'Berhasil menampilkan data siswa');
+        $siswa = Siswa::with(['kelas'])->filter()->simplePaginate((int)$request->get('per_page', 15));;
+        return Resource::collection($siswa);
     }
-
 
     public function store(Request $request)
     {
@@ -30,15 +30,28 @@ class SiswaController extends BaseController
             'jenis_kelamin' => 'required',
             'tempat_lahir' => 'required',
             'tanggal_lahir' => 'required',
-            'foto' => 'required',
+            'foto_siswa' => 'required',
+            'phone_number' => 'required'
         ]);
         if ($validator->fails()) {
             return $this->handleError($validator->errors());
         }
-        $siswa = Siswa::create($input);
-        return $this->handleResponse(new Resource($siswa), 'Berhasil menambahkan siswa');
-    }
 
+        try {
+            DB::beginTransaction();
+            $user = User::create([
+                'username' => $input['nis'],
+                'password' => bcrypt($input['tanggal_lahir']),
+                'role' => 'siswa'
+            ]);
+            $siswa = $user->siswa()->create($input);
+            DB::commit();
+            return $this->handleResponse(new Resource($siswa), 'Berhasil menambahkan siswa');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return $this->handleError('Gagal menambahkan siswa', [], 400);
+        }
+    }
 
     public function show($id)
     {
@@ -48,7 +61,6 @@ class SiswaController extends BaseController
         }
         return $this->handleResponse(new Resource($siswa), 'Berhasil menampilkan siswa');
     }
-
 
     public function update(Request $request, Siswa $siswa)
     {

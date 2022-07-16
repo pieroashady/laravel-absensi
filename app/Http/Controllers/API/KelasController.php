@@ -14,10 +14,10 @@ use Illuminate\Support\Facades\Validator;
 
 class KelasController extends BaseController
 {
-    public function index()
+    public function index(Request $request)
     {
-        $kelas = Kelas::all();
-        return $this->handleResponse(Resource::collection($kelas), 'Berhasil menampilkan data kelas');
+        $kelas = Kelas::with(['jurusan'])->filter()->simplePaginate((int)$request->get('per_page', 15));
+        return Resource::collection($kelas);
     }
 
     public function store(Request $request)
@@ -53,6 +53,6 @@ class KelasController extends BaseController
     public function destroy(Kelas $kelas)
     {
         $kelas->delete();
-        return $this->handleResponse($kelas, 'Data siswa berhasil dihapus');
+        return $this->handleResponse($kelas, 'Data kelas berhasil dihapus');
     }
 }

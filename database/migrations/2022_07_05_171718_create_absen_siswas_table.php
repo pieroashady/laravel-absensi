@@ -16,9 +16,10 @@ return new class extends Migration
         Schema::create('absen_siswa', function (Blueprint $table) {
             $table->id();
             $table->foreignId('siswa_id')->constrained('siswa');
-            $table->dateTime('absen_masuk');
-            $table->dateTime('absen_keluar');
-            $table->string('keterangan');
+            $table->date('tanggal');
+            $table->time('jam_masuk');
+            $table->time('jam_keluar')->nullable();
+            $table->string('keterangan')->nullable();
             $table->timestamps();
         });
     }

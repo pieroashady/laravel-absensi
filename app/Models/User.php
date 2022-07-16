@@ -39,4 +39,14 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [];
+
+    public function siswa()
+    {
+        return $this->hasOne(Siswa::class);
+    }
+
+    public function guru()
+    {
+        return $this->hasOne(Guru::class);
+    }
 }

@@ -19,10 +19,11 @@ return new class extends Migration
             $table->foreignId('kelas_id')->constrained('kelas');
             $table->string('nis')->unique();
             $table->string('nama_siswa');
+            $table->string('phone_number')->nullable();
             $table->enum('jenis_kelamin', ["0", "1"]);
             $table->string('tempat_lahir');
             $table->date('tanggal_lahir');
-            $table->string('foto_siswa');
+            $table->string('foto_siswa')->nullable();
             $table->timestamps();
         });
     }
