@@ -2,15 +2,9 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use App\Http\Resources\Resource;
-use App\Http\Resources\SiswaResource;
 use App\Models\AbsenSiswa;
-use App\Models\Kelas;
-use App\Models\Siswa;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -44,8 +38,16 @@ class AbsenSiswaController extends BaseController
         $currentTime = date('G:i:s');
         $currentDate = date('Y-m-d');
 
+        $input['jam_masuk'] = $currentTime;
+        $input['tanggal'] = $currentDate;
+
+        if (!Hash::check($input['tanggal'], $input['code'])) {
+            return $this->handleError('Absen kadaluarsa atau tidak valid', [], 400);
+        }
+
+        $checkAbsen = AbsenSiswa::where('siswa_id', $input['siswa_id'])->whereDate('tanggal', '=', $currentDate)->first();
+
         if ($input['tipe'] == 'keluar') {
-            $checkAbsen = AbsenSiswa::whereDate('tanggal', '=', $currentDate)->first();
             if (!$checkAbsen) {
                 return $this->handleError('Anda belum melakukan absen masuk', [], 400);
             }
@@ -57,16 +59,8 @@ class AbsenSiswaController extends BaseController
             return $this->handleResponse(new Resource($checkAbsen), 'Berhasil absen keluar');
         }
 
-        $checkAbsen = AbsenSiswa::whereDate('tanggal', '=', $currentDate)->first();
         if ($checkAbsen) {
             return $this->handleError('Anda telah melakukan absen masuk hari ini', [], 400);
-        }
-
-        $input['jam_masuk'] = $currentTime;
-        $input['tanggal'] = $currentDate;
-
-        if (!Hash::check($input['tanggal'], $input['code'])) {
-            return $this->handleError('Absen kadaluarsa atau tidak valid', [], 400);
         }
 
         $absen = AbsenSiswa::create($input);

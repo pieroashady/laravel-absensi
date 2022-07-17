@@ -29,6 +29,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('jadwal-mapel', JadwalMapelController::class);
 });
 
+Route::middleware('auth:sanctum')->get("/user", [AuthController::class, 'profile']);
+Route::middleware('auth:sanctum')->get("/refresh", [AuthController::class, 'refresh']);
+
 Route::resource('jurusan', JurusanController::class);
 Route::resource('kelas', KelasController::class);
 Route::resource('guru', GuruController::class);

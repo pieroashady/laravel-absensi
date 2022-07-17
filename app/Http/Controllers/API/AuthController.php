@@ -40,10 +40,21 @@ class AuthController extends BaseController
 
         try {
             $user = User::create($input);
-            $user['token'] =  $user->createToken('LaravelSanctumAuth')->plainTextToken;
+            $user['token'] =  $user->createToken($user->username)->plainTextToken;
             return $this->handleResponse($user, 'User successfully registered!');
         } catch (Exception $ex) {
             return $this->handleError('Akun sudah terdaftar.', ['error' => 'Akun sudah terdaftar']);
         }
+    }
+
+    public function profile(Request $request)
+    {
+        return response()->json(['user' => $request->user()]);
+    }
+
+    public function refresh(Request $request)
+    {
+        $user = $request->user();
+        return response()->json(['token' => $user->createToken($user->username)->plainTextToken]);
     }
 }
