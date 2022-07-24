@@ -27,6 +27,7 @@ class AbsenSiswa extends Model
         'jam_masuk',
         'jam_keluar',
         'keterangan',
+        'sort'
     ];
 
     protected $searchable = [

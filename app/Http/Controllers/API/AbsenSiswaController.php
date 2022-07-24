@@ -76,16 +76,16 @@ class AbsenSiswaController extends BaseController
         return $this->handleResponse(new Resource($absen), 'Berhasil menampilkan absen');
     }
 
-    public function update(Request $request, AbsenSiswa $absen)
+    public function update(Request $request, AbsenSiswa $absen_siswa)
     {
         $input = $request->all();
-        $absen->update($input);
-        return $this->handleResponse(new Resource($absen), 'Data absen berhasil diupdate');
+        $absen_siswa->update($input);
+        return $this->handleResponse(new Resource($absen_siswa), 'Data absen berhasil diupdate');
     }
 
-    public function destroy(AbsenSiswa $absen)
+    public function destroy(AbsenSiswa $absen_siswa)
     {
-        $absen->delete();
-        return $this->handleResponse($absen, 'Data absen berhasil dihapus');
+        $absen_siswa->delete();
+        return $this->handleResponse($absen_siswa, 'Data absen berhasil dihapus');
     }
 }

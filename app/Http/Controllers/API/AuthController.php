@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -17,9 +16,14 @@ class AuthController extends BaseController
             $auth = Auth::user();
             $auth['token'] =  $auth->createToken('LaravelSanctumAuth')->plainTextToken;
 
-            return $this->handleResponse($auth, 'User logged-in!');
+            if ($request->imei_device && !$auth->imei_device) {
+                $auth->imei_device = $request->imei_device;
+                $auth->save();
+            };
+
+            return $this->handleResponse($auth->load('siswa'), 'User logged-in!');
         } else {
-            return $this->handleError('Unauthorised.', ['error' => 'Unauthorised']);
+            return $this->handleError('Akun tidak ditemukan.', ['error' => 'Unauthorized']);
         }
     }
 
@@ -49,7 +53,7 @@ class AuthController extends BaseController
 
     public function profile(Request $request)
     {
-        return response()->json(['user' => $request->user()]);
+        return response()->json($request->user()->load(['siswa.kelas']));
     }
 
     public function refresh(Request $request)
