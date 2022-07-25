@@ -30,11 +30,10 @@ class SiswaController extends BaseController
             'jenis_kelamin' => 'required',
             'tempat_lahir' => 'required',
             'tanggal_lahir' => 'required',
-            'foto_siswa' => 'required',
             'phone_number' => 'required'
         ]);
         if ($validator->fails()) {
-            return $this->handleError($validator->errors());
+            return $this->handleError($validator->errors(), [], 400);
         }
 
         try {
