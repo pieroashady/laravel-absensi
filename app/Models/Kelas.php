@@ -19,7 +19,8 @@ class Kelas extends Model
 
     protected $filters = [
         'nama_kelas',
-        'jurusan_id'
+        'jurusan_id',
+        'sort'
     ];
 
     public function jurusan()

@@ -46,7 +46,9 @@ class GuruController extends BaseController
             return $this->handleResponse(new Resource($guru), 'Berhasil menambahkan guru');
         } catch (\Throwable $th) {
             DB::rollBack();
-            return $this->handleError('Gagal menambahkan guru', [], 400);
+            return $this->handleError('Gagal menambahkan guru', [
+                'error' => $th->getMessage()
+            ], 400);
         }
     }
 
