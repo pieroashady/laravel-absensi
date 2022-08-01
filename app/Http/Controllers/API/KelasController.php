@@ -43,16 +43,16 @@ class KelasController extends BaseController
         return $this->handleResponse(new Resource($kelas), 'Berhasil menampilkan kelas');
     }
 
-    public function update(Request $request, Kelas $kelas)
+    public function update(Request $request, Kelas $kela)
     {
         $input = $request->all();
-        $kelas->update($input);
-        return $this->handleResponse(new Resource($kelas), 'Data kelas berhasil diupdate');
+        $kela->update($input);
+        return $this->handleResponse(new Resource($kela), 'Data kelas berhasil diupdate');
     }
 
-    public function destroy(Kelas $kelas)
+    public function destroy(Kelas $kela)
     {
-        $kelas->delete();
-        return $this->handleResponse($kelas, 'Data kelas berhasil dihapus');
+        $kela->delete();
+        return $this->handleResponse($kela, 'Data kelas berhasil dihapus');
     }
 }

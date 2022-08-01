@@ -16,10 +16,14 @@ use Illuminate\Support\Facades\Validator;
 
 class JadwalMapelController extends BaseController
 {
-    public function index()
+    public function index(Request $request)
     {
-        $jadwalMapel = JadwalMapel::all();
-        return $this->handleResponse(Resource::collection($jadwalMapel), 'Berhasil menampilkan data jadwal mapel');
+        $jadwalMapel = JadwalMapel::with(['guru', 'kelas', 'mata_pelajaran']);
+        if ($request->get('q')) {
+            $jadwalMapel = $jadwalMapel->search($request->get('q'));
+        }
+        $jadwalMapel = $jadwalMapel->simplePaginate((int)$request->get('per_page', 15));
+        return Resource::collection($jadwalMapel);
     }
 
     public function store(Request $request)
@@ -32,6 +36,14 @@ class JadwalMapelController extends BaseController
         ]);
         if ($validator->fails()) {
             return $this->handleError($validator->errors());
+        }
+        $checkGuruMapel = JadwalMapel::where([
+            ['guru_id', '=', $input['guru_id']],
+            ['kelas_id', '=', $input['kelas_id']],
+            ['mata_pelajaran_id', '=', $input['mata_pelajaran_id']]
+        ])->first();
+        if ($checkGuruMapel) {
+            return $this->handleError('Data sudah ada', [], 400);
         }
         $jadwalMapel = JadwalMapel::create($input);
         return $this->handleResponse(new Resource($jadwalMapel), 'Berhasil menambahkan jadwal mapel');
@@ -46,16 +58,16 @@ class JadwalMapelController extends BaseController
         return $this->handleResponse(new Resource($jadwalMapel), 'Berhasil menampilkan jadwal mapel');
     }
 
-    public function update(Request $request, JadwalMapel $jadwalMapel)
+    public function update(Request $request, JadwalMapel $jadwal_mapel)
     {
         $input = $request->all();
-        $jadwalMapel->update($input);
-        return $this->handleResponse(new Resource($jadwalMapel), 'Data jadwal mapel berhasil diupdate');
+        $jadwal_mapel->update($input);
+        return $this->handleResponse(new Resource($jadwal_mapel), 'Data jadwal mapel berhasil diupdate');
     }
 
-    public function destroy(JadwalMapel $jadwalMapel)
+    public function destroy(JadwalMapel $jadwal_mapel)
     {
-        $jadwalMapel->delete();
-        return $this->handleResponse($jadwalMapel, 'Data jadwal mapel berhasil dihapus');
+        $jadwal_mapel->delete();
+        return $this->handleResponse($jadwal_mapel, 'Data jadwal mapel berhasil dihapus');
     }
 }

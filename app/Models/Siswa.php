@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Mehradsadeghi\FilterQueryString\FilterQueryString;
+use Nicolaslopezj\Searchable\SearchableTrait;
 
 class Siswa extends Model
 {
-    use HasFactory, FilterQueryString;
+    use HasFactory, FilterQueryString, SearchableTrait;
 
     protected $table = 'siswa';
 
@@ -32,6 +33,20 @@ class Siswa extends Model
         'foto_siswa',
         'kelas_id',
         'phone_number'
+    ];
+
+    protected $searchable = [
+        /**
+         * Columns and their priority in search results.
+         * Columns with higher values are more important.
+         * Columns with equal values have equal importance.
+         *
+         * @var array
+         */
+        'columns' => [
+            'nis' => 10,
+            'nama_siswa' => 10,
+        ],
     ];
 
     public function kelas()

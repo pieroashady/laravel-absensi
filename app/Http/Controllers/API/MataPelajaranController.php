@@ -2,15 +2,9 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use App\Http\Resources\Resource;
-use App\Http\Resources\SiswaResource;
-use App\Models\Kelas;
 use App\Models\MataPelajaran;
-use App\Models\Siswa;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class MataPelajaranController extends BaseController
@@ -43,16 +37,16 @@ class MataPelajaranController extends BaseController
         return $this->handleResponse(new Resource($mapel), 'Berhasil menampilkan mapel');
     }
 
-    public function update(Request $request, MataPelajaran $mapel)
+    public function update(Request $request, MataPelajaran $mata_pelajaran)
     {
         $input = $request->all();
-        $mapel->update($input);
-        return $this->handleResponse(new Resource($mapel), 'Data mapel berhasil diupdate');
+        $mata_pelajaran->update($input);
+        return $this->handleResponse(new Resource($mata_pelajaran), 'Data mata pelajaran berhasil diupdate');
     }
 
-    public function destroy(MataPelajaran $mapel)
+    public function destroy(MataPelajaran $mata_pelajaran)
     {
-        $mapel->delete();
-        return $this->handleResponse($mapel, 'Data siswa berhasil dihapus');
+        $mata_pelajaran->delete();
+        return $this->handleResponse($mata_pelajaran, 'Data mata pelajaran berhasil dihapus');
     }
 }

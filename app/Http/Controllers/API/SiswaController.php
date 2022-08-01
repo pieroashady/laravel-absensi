@@ -16,7 +16,11 @@ class SiswaController extends BaseController
 {
     public function index(Request $request)
     {
-        $siswa = Siswa::with(['kelas'])->filter()->simplePaginate((int)$request->get('per_page', 15));;
+        $siswa = Siswa::with(['kelas'])->filter();
+        if ($request->get('q')) {
+            $siswa = $siswa->search($request->get('q'));
+        }
+        $siswa = $siswa->simplePaginate((int)$request->get('per_page', 15));
         return Resource::collection($siswa);
     }
 

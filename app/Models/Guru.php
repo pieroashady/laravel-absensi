@@ -19,6 +19,7 @@ class Guru extends Model
         'jenis_kelamin',
         'tempat_lahir',
         'tanggal_lahir',
+        'phone_number'
     ];
 
     protected $filters = [
