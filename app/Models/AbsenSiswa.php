@@ -41,6 +41,7 @@ class AbsenSiswa extends Model
         'columns' => [
             'siswa.nis' => 10,
             'siswa.nama_siswa' => 10,
+            'siswa.kelas_id' => 100,
         ],
         'joins' => [
             'siswa' => ['siswa.id', 'absen_siswa.siswa_id'],
@@ -50,5 +51,10 @@ class AbsenSiswa extends Model
     public function siswa()
     {
         return $this->belongsTo(Siswa::class);
+    }
+
+    public function absen()
+    {
+        return $this->hasMany(AbsenSiswa::class, 'siswa_id', 'siswa_id');
     }
 }

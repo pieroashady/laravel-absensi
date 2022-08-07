@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Exports\AbsenSiswaExport;
 use App\Http\Resources\Resource;
 use App\Models\AbsenSiswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 date_default_timezone_set('Asia/Jakarta');
 
@@ -14,7 +16,12 @@ class AbsenSiswaController extends BaseController
 {
     public function index(Request $request)
     {
-        $absen = AbsenSiswa::with(['siswa.kelas'])->filter();
+        print_r(date('l', strtotime("2022-08-01")));
+        $absen = AbsenSiswa::with(['siswa.kelas', 'absen'])->whereHas('siswa', function ($q) use ($request) {
+            if ($request['kelas_id']) {
+                $q->where('kelas_id', '=', $request['kelas_id']);
+            }
+        })->groupBy('siswa_id')->filter();
         if ($request->get('q')) {
             $absen = $absen->search($request->get('q'));
         }
@@ -87,5 +94,10 @@ class AbsenSiswaController extends BaseController
     {
         $absen_siswa->delete();
         return $this->handleResponse($absen_siswa, 'Data absen berhasil dihapus');
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new AbsenSiswaExport($request), 'absen.xlsx');
     }
 }

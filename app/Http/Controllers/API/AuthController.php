@@ -21,7 +21,7 @@ class AuthController extends BaseController
                 $auth->save();
             };
 
-            return $this->handleResponse($auth->load('siswa'), 'User logged-in!');
+            return $this->handleResponse($auth->load(['siswa', 'guru']), 'User logged-in!');
         } else {
             return $this->handleError('Akun tidak ditemukan.', ['error' => 'Unauthorized']);
         }
@@ -53,7 +53,7 @@ class AuthController extends BaseController
 
     public function profile(Request $request)
     {
-        return response()->json($request->user()->load(['siswa.kelas']));
+        return response()->json($request->user()->load(['siswa.kelas', 'guru']));
     }
 
     public function refresh(Request $request)

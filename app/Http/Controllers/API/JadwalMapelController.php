@@ -18,7 +18,7 @@ class JadwalMapelController extends BaseController
 {
     public function index(Request $request)
     {
-        $jadwalMapel = JadwalMapel::with(['guru', 'kelas', 'mata_pelajaran']);
+        $jadwalMapel = JadwalMapel::with(['guru', 'kelas', 'mata_pelajaran'])->filter();
         if ($request->get('q')) {
             $jadwalMapel = $jadwalMapel->search($request->get('q'));
         }

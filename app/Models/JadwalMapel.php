@@ -4,14 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Mehradsadeghi\FilterQueryString\FilterQueryString;
 
 class JadwalMapel extends Model
 {
-    use HasFactory;
+    use HasFactory, FilterQueryString;
 
     protected $table = 'jadwal_mapel';
 
     protected $fillable = [
+        'guru_id',
+        'kelas_id',
+        'mata_pelajaran_id'
+    ];
+
+    protected $filters = [
         'guru_id',
         'kelas_id',
         'mata_pelajaran_id'
