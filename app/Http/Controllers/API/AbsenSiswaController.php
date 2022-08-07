@@ -8,6 +8,7 @@ use App\Models\AbsenSiswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
 
 date_default_timezone_set('Asia/Jakarta');
@@ -16,12 +17,13 @@ class AbsenSiswaController extends BaseController
 {
     public function index(Request $request)
     {
-        print_r(date('l', strtotime("2022-08-01")));
-        $absen = AbsenSiswa::with(['siswa.kelas', 'absen'])->whereHas('siswa', function ($q) use ($request) {
+        $absen = AbsenSiswa::with(['siswa.kelas', 'absen' => function ($q) {
+            $q->whereDate('tanggal', date('Y-m-d', strtotime('2022-07-30')));
+        }])->whereHas('siswa', function ($q) use ($request) {
             if ($request['kelas_id']) {
                 $q->where('kelas_id', '=', $request['kelas_id']);
             }
-        })->groupBy('siswa_id')->filter();
+        })->filter();
         if ($request->get('q')) {
             $absen = $absen->search($request->get('q'));
         }
@@ -98,6 +100,16 @@ class AbsenSiswaController extends BaseController
 
     public function export(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'kelas_id' => 'required',
+            'date' => ['required_if:type,==,harian', 'date'],
+            'month' => 'required_if:type,==,bulanan',
+            'year' => 'required_if:type,==,bulanan',
+            'type' => ['required', Rule::in(['harian', 'bulanan'])],
+        ]);
+        if ($validator->fails()) {
+            return $this->handleError($validator->errors());
+        }
         return Excel::download(new AbsenSiswaExport($request), 'absen.xlsx');
     }
 }
