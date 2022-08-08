@@ -20,7 +20,7 @@ class SiswaController extends BaseController
         if ($request->get('q')) {
             $siswa = $siswa->search($request->get('q'));
         }
-        $siswa = $siswa->simplePaginate((int)$request->get('per_page', 15));
+        $siswa = $siswa->paginate((int)$request->get('per_page', 15));
         return Resource::collection($siswa);
     }
 

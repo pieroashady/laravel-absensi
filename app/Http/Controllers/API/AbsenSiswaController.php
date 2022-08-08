@@ -27,7 +27,7 @@ class AbsenSiswaController extends BaseController
         if ($request->get('q')) {
             $absen = $absen->search($request->get('q'));
         }
-        $absen = $absen->simplePaginate((int)$request->get('req_page', 15));
+        $absen = $absen->paginate((int)$request->get('req_page', 15));
         return Resource::collection($absen);
     }
 
@@ -111,5 +111,57 @@ class AbsenSiswaController extends BaseController
             return $this->handleError($validator->errors());
         }
         return Excel::download(new AbsenSiswaExport($request), 'absen.xlsx');
+    }
+
+    public function rekap(Request $request)
+    {
+        $absen = AbsenSiswa::with(['siswa.kelas', 'absen'])->whereHas('siswa', function ($q) use ($request) {
+            if ($request['kelas_id']) {
+                $q->where('kelas_id', '=', $request['kelas_id']);
+            }
+        })->orderBy('created_at', 'desc');
+        $absen->groupBy('siswa_id');
+        $absen = $absen->filter()->first();
+
+        if (!$absen) {
+            return $this->handleError('Siswa tidak ditemukan');
+        }
+
+        $formattedDate = str_pad($date, 2, '0', STR_PAD_LEFT);
+        $dateDay = date('l', strtotime("$year-$month-$formattedDate"));
+
+        foreach ($absen->absen as $item) {
+            $absenDate = date('j', strtotime($item->tanggal));
+
+            if ($dateDay == "Saturday" || $dateDay == "Sunday") {
+                $absenDesc = "-";
+                break;
+            };
+
+            if ($date != (int) $absenDate) {
+                $absenDesc = "A";
+            } else {
+                if ($item->keterangan) {
+                    $absenDesc = $item->keterangan;
+                    if ($item->keterangan == "Izin") {
+                        $totalIzin += 1;
+                    }
+                    if ($item->keterangan == "Sakit") {
+                        $totalSakit += 1;
+                    }
+                    break;
+                }
+                $absenDesc = "1";
+                $totalHadir += 1;
+                break;
+            }
+        }
+
+        if ($absenDesc == 'A') {
+            $totalAlpa += 1;
+        }
+
+
+        return $absen;
     }
 }

@@ -35,7 +35,8 @@ Route::resource('siswa', SiswaController::class);
 Route::resource('absen-siswa', AbsenSiswaController::class);
 Route::resource('mata-pelajaran', MataPelajaranController::class);
 Route::resource('jadwal-mapel', JadwalMapelController::class);
-Route::post('absen-siswa-export', [AbsenSiswaController::class, 'export']);
+Route::get('absen-siswa-export', [AbsenSiswaController::class, 'export']);
+Route::get('rekap-absen-siswa', [AbsenSiswaController::class, 'rekap']);
 
 Route::get('qr', [QrCodeController::class, 'index']);
 Route::post('upload', [UploadController::class, 'index']);

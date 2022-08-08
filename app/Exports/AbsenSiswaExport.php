@@ -148,7 +148,6 @@ class AbsenSiswaExport implements FromCollection, WithHeadings, WithMapping, Sho
 
                 if ($date != (int) $absenDate) {
                     $absenDesc = "A";
-                    $totalAlpa += 1;
                 } else {
                     if ($item->keterangan) {
                         $absenDesc = $item->keterangan;
@@ -158,13 +157,16 @@ class AbsenSiswaExport implements FromCollection, WithHeadings, WithMapping, Sho
                         if ($item->keterangan == "Sakit") {
                             $totalSakit += 1;
                         }
-
                         break;
                     }
                     $absenDesc = "1";
                     $totalHadir += 1;
                     break;
                 }
+            }
+
+            if ($absenDesc == 'A') {
+                $totalAlpa += 1;
             }
 
             array_push($mapping, $absenDesc);
