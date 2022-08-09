@@ -16,6 +16,12 @@ class AuthController extends BaseController
             $auth = Auth::user();
             $auth['token'] =  $auth->createToken('LaravelSanctumAuth')->plainTextToken;
 
+            if ($auth->imei_device) {
+                if ($request->imei_device != $auth->imei_device) {
+                    return $this->handleError('Akun tidak bisa login di beda perangkat.', ['error' => 'Unauthorized']);
+                }
+            }
+
             if ($request->imei_device && !$auth->imei_device) {
                 $auth->imei_device = $request->imei_device;
                 $auth->save();
