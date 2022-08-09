@@ -22,7 +22,7 @@ class AbsenSiswaController extends BaseController
 {
     public function index(Request $request)
     {
-        $absen = AbsenSiswa::with(['siswa.kelas', 'absen'])->whereHas('siswa', function ($q) use ($request) {
+        $absen = AbsenSiswa::with(['siswa.kelas'])->whereHas('siswa', function ($q) use ($request) {
             if ($request['kelas_id']) {
                 $q->where('kelas_id', '=', $request['kelas_id']);
             }
