@@ -9,6 +9,7 @@ use App\Http\Controllers\API\KelasController;
 use App\Http\Controllers\API\MataPelajaranController;
 use App\Http\Controllers\API\QrCodeController;
 use App\Http\Controllers\API\SiswaController;
+use App\Http\Controllers\API\TahunAjaranController;
 use App\Http\Controllers\API\UploadController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +36,7 @@ Route::resource('siswa', SiswaController::class);
 Route::resource('absen-siswa', AbsenSiswaController::class);
 Route::resource('mata-pelajaran', MataPelajaranController::class);
 Route::resource('jadwal-mapel', JadwalMapelController::class);
+Route::resource('tahun-ajaran', TahunAjaranController::class);
 Route::get('absen-siswa-export', [AbsenSiswaController::class, 'export']);
 Route::get('rekap-absen-siswa', [AbsenSiswaController::class, 'rekap']);
 
