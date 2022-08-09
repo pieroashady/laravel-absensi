@@ -14,7 +14,6 @@ class AuthController extends BaseController
     {
         if (Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
             $auth = Auth::user();
-            $auth['token'] =  $auth->createToken('LaravelSanctumAuth')->plainTextToken;
 
             if ($auth->imei_device) {
                 if ($request->imei_device != $auth->imei_device) {
@@ -23,9 +22,11 @@ class AuthController extends BaseController
             }
 
             if ($request->imei_device && !$auth->imei_device) {
-                $auth->imei_device = $request->imei_device;
-                $auth->save();
+                $user = User::find($auth->id)->update(['imei_device' => $request->imei_device]);
+                $auth['imei_device'] = $user->imei_device;
             };
+
+            $auth['token'] =  $auth->createToken('LaravelSanctumAuth')->plainTextToken;
 
             return $this->handleResponse($auth->load(['siswa', 'guru']), 'User logged-in!');
         } else {
