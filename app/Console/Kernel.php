@@ -29,7 +29,7 @@ class Kernel extends ConsoleKernel
                     'keterangan' => 'Alpa'
                 ]);
             };
-        })->timezone('Asia/Jakarta')->weekdays('08:00');
+        })->timezone('Asia/Jakarta')->weekdays()->at('08:00');
 
         // $schedule->command('inspire')->everyMinute();
     }
