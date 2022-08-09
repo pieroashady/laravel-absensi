@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Exports\AbsenSiswaExport;
 use App\Http\Resources\Resource;
 use App\Models\AbsenSiswa;
+use App\Models\Siswa;
 use App\Models\TahunAjaran;
 use DateInterval;
 use DatePeriod;
@@ -117,6 +118,13 @@ class AbsenSiswaController extends BaseController
 
     public function rekap(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'siswa_id' => 'required',
+        ]);
+        $siswa = Siswa::find($request->siswa_id);
+        if (is_null($siswa)) {
+            return $this->handleError('Siswa tidak ditemukan');
+        }
         $totalAlpa = AbsenSiswa::where('siswa_id', $request->siswa_id)->where('keterangan', 'Alpa')->count();
         $totalIzin = AbsenSiswa::where('siswa_id', $request->siswa_id)->where('keterangan', 'Izin')->count();
         $totalSakit = AbsenSiswa::where('siswa_id', $request->siswa_id)->where('keterangan', 'Sakit')->count();
