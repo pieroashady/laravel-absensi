@@ -30,7 +30,7 @@ class AbsenSiswaController extends BaseController
         if ($request->get('q')) {
             $absen = $absen->search($request->get('q'));
         }
-        $absen = $absen->paginate((int)$request->get('req_page', 15));
+        $absen = $absen->paginate((int)$request->get('per_page', 15));
         return Resource::collection($absen);
     }
 
