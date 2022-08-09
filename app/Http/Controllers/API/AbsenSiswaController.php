@@ -5,6 +5,10 @@ namespace App\Http\Controllers\API;
 use App\Exports\AbsenSiswaExport;
 use App\Http\Resources\Resource;
 use App\Models\AbsenSiswa;
+use App\Models\TahunAjaran;
+use DateInterval;
+use DatePeriod;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -17,9 +21,7 @@ class AbsenSiswaController extends BaseController
 {
     public function index(Request $request)
     {
-        $absen = AbsenSiswa::with(['siswa.kelas', 'absen' => function ($q) {
-            $q->whereDate('tanggal', date('Y-m-d', strtotime('2022-07-30')));
-        }])->whereHas('siswa', function ($q) use ($request) {
+        $absen = AbsenSiswa::with(['siswa.kelas', 'absen'])->whereHas('siswa', function ($q) use ($request) {
             if ($request['kelas_id']) {
                 $q->where('kelas_id', '=', $request['kelas_id']);
             }
@@ -115,53 +117,14 @@ class AbsenSiswaController extends BaseController
 
     public function rekap(Request $request)
     {
-        $absen = AbsenSiswa::with(['siswa.kelas', 'absen'])->whereHas('siswa', function ($q) use ($request) {
-            if ($request['kelas_id']) {
-                $q->where('kelas_id', '=', $request['kelas_id']);
-            }
-        })->orderBy('created_at', 'desc');
-        $absen->groupBy('siswa_id');
-        $absen = $absen->filter()->first();
+        $totalAlpa = AbsenSiswa::where('siswa_id', $request->siswa_id)->where('keterangan', 'Alpa')->count();
+        $totalIzin = AbsenSiswa::where('siswa_id', $request->siswa_id)->where('keterangan', 'Izin')->count();
+        $totalSakit = AbsenSiswa::where('siswa_id', $request->siswa_id)->where('keterangan', 'Sakit')->count();
 
-        if (!$absen) {
-            return $this->handleError('Siswa tidak ditemukan');
-        }
-
-        $formattedDate = str_pad($date, 2, '0', STR_PAD_LEFT);
-        $dateDay = date('l', strtotime("$year-$month-$formattedDate"));
-
-        foreach ($absen->absen as $item) {
-            $absenDate = date('j', strtotime($item->tanggal));
-
-            if ($dateDay == "Saturday" || $dateDay == "Sunday") {
-                $absenDesc = "-";
-                break;
-            };
-
-            if ($date != (int) $absenDate) {
-                $absenDesc = "A";
-            } else {
-                if ($item->keterangan) {
-                    $absenDesc = $item->keterangan;
-                    if ($item->keterangan == "Izin") {
-                        $totalIzin += 1;
-                    }
-                    if ($item->keterangan == "Sakit") {
-                        $totalSakit += 1;
-                    }
-                    break;
-                }
-                $absenDesc = "1";
-                $totalHadir += 1;
-                break;
-            }
-        }
-
-        if ($absenDesc == 'A') {
-            $totalAlpa += 1;
-        }
-
-
-        return $absen;
+        return $this->handleResponse([
+            "total_alpa" => $totalAlpa,
+            "total_izin" => $totalIzin,
+            "total_sakit" => $totalSakit
+        ], "Berhasil mendapatkan data");
     }
 }
