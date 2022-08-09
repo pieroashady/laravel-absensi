@@ -13,6 +13,11 @@ class Siswa extends Model
 
     protected $table = 'siswa';
 
+    protected $casts = [
+        'kelas_id' => 'integer',
+        'user_id' => 'integer',
+    ];
+
     protected $fillable = [
         'nis',
         'nama_siswa',

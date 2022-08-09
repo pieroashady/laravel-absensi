@@ -13,6 +13,10 @@ class AbsenSiswa extends Model
 
     protected $table = 'absen_siswa';
 
+    protected $casts = [
+        'siswa_id' => 'integer',
+    ];
+
     protected $fillable = [
         'siswa_id',
         'tanggal',

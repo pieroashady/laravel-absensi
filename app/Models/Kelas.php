@@ -12,6 +12,10 @@ class Kelas extends Model
 
     protected $table = 'kelas';
 
+    protected $casts = [
+        'jurusan_id' => 'integer',
+    ];
+
     protected $fillable = [
         'nama_kelas',
         'jurusan_id'

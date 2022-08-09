@@ -12,6 +12,12 @@ class JadwalMapel extends Model
 
     protected $table = 'jadwal_mapel';
 
+    protected $casts = [
+        'kelas_id' => 'integer',
+        'guru_id' => 'integer',
+        'mata_pelajaran_id' => 'integer'
+    ];
+
     protected $fillable = [
         'guru_id',
         'kelas_id',
