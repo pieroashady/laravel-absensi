@@ -33,7 +33,7 @@ class Kernel extends ConsoleKernel
                 ]);
             };
             Log::info("Finish cron at $date");
-        })->timezone('Asia/Jakarta')->everyMinute();
+        })->timezone('Asia/Jakarta')->weekdays()->at('08:00');
 
         // $schedule->command('inspire')->everyMinute();
     }
