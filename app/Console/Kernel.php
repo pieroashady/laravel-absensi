@@ -7,6 +7,7 @@ use App\Models\Siswa;
 use App\Models\User;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -19,6 +20,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->call(function () {
+            $date = date('Y-m-d');
+            Log::info("Running cron at $date");
             $todayAbsen = AbsenSiswa::select('siswa_id')->whereDate('created_at', date('Y-m-d'))->get();
             $userList = $todayAbsen->pluck('siswa_id')->all();
             $userAlpaList = Siswa::select('id')->whereNotIn('id', $userList)->get();
@@ -29,7 +32,8 @@ class Kernel extends ConsoleKernel
                     'keterangan' => 'Alpa'
                 ]);
             };
-        })->timezone('Asia/Jakarta')->weekdays()->at('08:00');
+            Log::info("Finish cron at $date");
+        })->timezone('Asia/Jakarta')->everyMinute();
 
         // $schedule->command('inspire')->everyMinute();
     }
