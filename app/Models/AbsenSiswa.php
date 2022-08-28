@@ -15,6 +15,7 @@ class AbsenSiswa extends Model
 
     protected $casts = [
         'siswa_id' => 'integer',
+        'mata_pelajaran_id' => 'integer'
     ];
 
     protected $fillable = [
@@ -23,6 +24,7 @@ class AbsenSiswa extends Model
         'jam_masuk',
         'jam_keluar',
         'keterangan',
+        'mata_pelajaran_id'
     ];
 
     protected $filters = [
@@ -31,7 +33,8 @@ class AbsenSiswa extends Model
         'jam_masuk',
         'jam_keluar',
         'keterangan',
-        'sort'
+        'sort',
+        'mata_pelajaran_id'
     ];
 
     protected $searchable = [

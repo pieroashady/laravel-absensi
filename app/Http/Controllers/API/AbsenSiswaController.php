@@ -3,13 +3,10 @@
 namespace App\Http\Controllers\API;
 
 use App\Exports\AbsenSiswaExport;
+use App\Helpers\AppHelper;
 use App\Http\Resources\Resource;
 use App\Models\AbsenSiswa;
 use App\Models\Siswa;
-use App\Models\TahunAjaran;
-use DateInterval;
-use DatePeriod;
-use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -41,10 +38,18 @@ class AbsenSiswaController extends BaseController
         $validator = Validator::make($input, [
             'siswa_id' => 'required',
             'code' => 'required',
-            'tipe' => 'required'
+            'tipe' => 'required',
+            'mata_pelajaran_id' => 'required'
         ]);
+
         if ($validator->fails()) {
             return $this->handleError($validator->errors());
+        }
+
+        $siswa = Siswa::find($input['siswa_id']);
+
+        if (!$siswa) {
+            return $this->handleError('Id siswa tidak ditemukan', [], 404);
         }
 
         $currentTime = date('G:i:s');
@@ -53,11 +58,15 @@ class AbsenSiswaController extends BaseController
         $input['jam_masuk'] = $currentTime;
         $input['tanggal'] = $currentDate;
 
-        if (!Hash::check($input['tanggal'], $input['code'])) {
+        $generated_code = AppHelper::qr_code_format($input['mata_pelajaran_id'], $siswa['kelas_id']);
+
+        if (!Hash::check($generated_code, $input['code'])) {
             return $this->handleError('Absen kadaluarsa atau tidak valid', [], 400);
         }
 
-        $checkAbsen = AbsenSiswa::where('siswa_id', $input['siswa_id'])->whereDate('tanggal', '=', $currentDate)->first();
+        $checkAbsen = AbsenSiswa::where('siswa_id', $input['siswa_id'])
+            ->where('mata_pelajaran_id', $input['mata_pelajaran_id'])
+            ->whereDate('tanggal', '=', $currentDate)->first();
 
         if ($input['tipe'] == 'keluar') {
             if (!$checkAbsen) {

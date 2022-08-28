@@ -19,21 +19,21 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->call(function () {
-            $date = date('Y-m-d');
-            Log::info("Running cron at $date");
-            $todayAbsen = AbsenSiswa::select('siswa_id')->whereDate('created_at', date('Y-m-d'))->get();
-            $userList = $todayAbsen->pluck('siswa_id')->all();
-            $userAlpaList = Siswa::select('id')->whereNotIn('id', $userList)->get();
-            foreach ($userAlpaList as $key => $value) {
-                AbsenSiswa::create([
-                    'siswa_id' => $value->id,
-                    'tanggal' => date('Y-m-d'),
-                    'keterangan' => 'Alpa'
-                ]);
-            };
-            Log::info("Finish cron at $date");
-        })->timezone('Asia/Jakarta')->weekdays()->at('08:00');
+        // $schedule->call(function () {
+        //     $date = date('Y-m-d');
+        //     Log::info("Running cron at $date");
+        //     $todayAbsen = AbsenSiswa::select('siswa_id')->whereDate('created_at', date('Y-m-d'))->get();
+        //     $userList = $todayAbsen->pluck('siswa_id')->all();
+        //     $userAlpaList = Siswa::select('id')->whereNotIn('id', $userList)->get();
+        //     foreach ($userAlpaList as $key => $value) {
+        //         AbsenSiswa::create([
+        //             'siswa_id' => $value->id,
+        //             'tanggal' => date('Y-m-d'),
+        //             'keterangan' => 'Alpa'
+        //         ]);
+        //     };
+        //     Log::info("Finish cron at $date");
+        // })->timezone('Asia/Jakarta')->weekdays()->at('08:00');
 
         // $schedule->command('inspire')->everyMinute();
     }
