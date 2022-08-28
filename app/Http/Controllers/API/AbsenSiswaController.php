@@ -129,14 +129,17 @@ class AbsenSiswaController extends BaseController
     {
         $validator = Validator::make($request->all(), [
             'siswa_id' => 'required',
+            'mata_pelajaran_id' => 'required'
         ]);
+
         $siswa = Siswa::find($request->siswa_id);
         if (is_null($siswa)) {
             return $this->handleError('Siswa tidak ditemukan');
         }
-        $totalAlpa = AbsenSiswa::where('siswa_id', $request->siswa_id)->where('keterangan', 'Alpa')->count();
-        $totalIzin = AbsenSiswa::where('siswa_id', $request->siswa_id)->where('keterangan', 'Izin')->count();
-        $totalSakit = AbsenSiswa::where('siswa_id', $request->siswa_id)->where('keterangan', 'Sakit')->count();
+
+        $totalAlpa = AbsenSiswa::where('siswa_id', $request->siswa_id)->where('mata_pelajaran_id', $request->mata_pelajaran_id)->where('keterangan', 'Alpa')->count();
+        $totalIzin = AbsenSiswa::where('siswa_id', $request->siswa_id)->where('mata_pelajaran_id', $request->mata_pelajaran_id)->where('keterangan', 'Izin')->count();
+        $totalSakit = AbsenSiswa::where('siswa_id', $request->siswa_id)->where('mata_pelajaran_id', $request->mata_pelajaran_id)->where('keterangan', 'Sakit')->count();
 
         return $this->handleResponse([
             "total_alpa" => $totalAlpa,
